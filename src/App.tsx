@@ -4,8 +4,8 @@ import AppShell from './components/Layout/AppShell'
 import { usePinpointStore } from './store/usePinpointStore'
 import MemoryPanel from './components/PastMode/MemoryPanel'
 import TripPlanner from './components/FutureMode/TripPlanner'
-import AddPinModal from './components/AddPin/AddPinModal'
 import LocationSidebar from './components/Sidebar/LocationSidebar'
+import AddPinPanel from './components/AddPin/AddPinPanel'
 
 // Lazy-load the heavy Globe component
 const GlobeView = lazy(() => import('./components/Globe/GlobeView'))
@@ -67,7 +67,7 @@ class ErrorBoundaryWrapper extends Component<EBProps, { hasError: boolean }> {
 }
 
 function App() {
-  const { mode, selectedPin } = usePinpointStore()
+  const { mode, selectedPin, isAdding } = usePinpointStore()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -76,9 +76,9 @@ function App() {
 
   return (
     <AppShell>
-      <div className="flex w-full h-full p-6 gap-6 overflow-hidden">
-        {/* ── Left: Globe Content (Floating Card) ────────────────── */}
-        <div className="flex-1 relative overflow-hidden rounded-[2.5rem] bg-white/20 border border-white/40 shadow-xl">
+      <div className="relative w-full h-full overflow-hidden">
+        {/* ── Background: Globe Content (Full Screen, Shifted Left) ────────────── */}
+        <div className="absolute inset-0 right-[20%] left-[-10%] z-0">
           {mounted && (
             <GlobeErrorBoundary>
               <Suspense fallback={
@@ -93,30 +93,10 @@ function App() {
               </Suspense>
             </GlobeErrorBoundary>
           )}
+        </div>
 
-          {/* Mode hint toast */}
-          <AnimatePresence>
-            {!selectedPin && (
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 px-6 py-3 bg-white/80 backdrop-blur-md rounded-full border border-white/40 shadow-lg z-20"
-              >
-                <p className="text-sm font-semibold text-gray-600 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  Select a destination to explore
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* ── Overlay Panels (Slides over globe area) ───────────── */}
-          <AnimatePresence mode="wait">
-            {selectedPin?.mode === 'past' && <MemoryPanel key={`memory-${selectedPin.id}`} />}
-            {selectedPin?.mode === 'future' && <TripPlanner key={`trip-${selectedPin.id}`} />}
-          </AnimatePresence>
-          {/* ── Mode hint toast ─────────────────────────────────────── */}
+        {/* ── Foreground: HUD Elements (Overlays) ────────────────── */}
+        <div className="absolute inset-0 z-10 pointer-events-none">
           <div
             className="absolute bottom-8 left-8 px-5 py-2.5 rounded-2xl text-[11px] font-bold uppercase tracking-widest text-gray-600 pointer-events-none z-20 shadow-lg border border-white/30"
             style={{
@@ -124,18 +104,50 @@ function App() {
               backdropFilter: 'blur(12px)',
             }}
           >
-            {mode === 'past' ? '🟠 Discovering Past Memories' : '🟣 Planning Future Escapes'}
+            {mode === 'past' ? 'Discovering Past Memories' : 'Planning Future Escapes'}
           </div>
         </div>
 
-        {/* ── Right: List Sidebar ─────────────────────────────────── */}
-        <div className="w-[45%] h-full shrink-0 z-30 p-6 pl-0">
-          <LocationSidebar />
+        {/* ── Right Panel Stack: Navigation HUD ─────────────────────── */}
+        <div className="absolute top-6 right-6 bottom-6 w-[440px] z-30 pointer-events-auto">
+          <AnimatePresence mode="wait">
+            {isAdding ? (
+              <motion.div
+                key="add-panel"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.2 }}
+                className="w-full h-full"
+              >
+                <AddPinPanel />
+              </motion.div>
+            ) : !selectedPin ? (
+              <motion.div
+                key="sidebar-list"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full h-full"
+              >
+                <LocationSidebar />
+              </motion.div>
+            ) : (
+              <motion.div
+                key={`detail-${selectedPin.id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-full h-full"
+              >
+                {selectedPin.mode === 'past' ? <MemoryPanel /> : <TripPlanner />}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* ── Modals ────────────────────────────────────────── */}
-      <AddPinModal />
     </AppShell>
   )
 }

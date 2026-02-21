@@ -7,12 +7,14 @@ interface PinpointState {
     mode: Mode
     pins: Pin[]
     selectedPin: Pin | null
-    showAddModal: boolean
+    isAdding: boolean
+    lastClickedCoords: { lat: number; lng: number } | null
 
     // Actions
     setMode: (mode: Mode) => void
     setSelectedPin: (pin: Pin | null) => void
-    setShowAddModal: (show: boolean) => void
+    setIsAdding: (adding: boolean) => void
+    setLastClickedCoords: (coords: { lat: number; lng: number } | null) => void
     addPin: (pin: Pin) => void
     updatePin: (id: string, updates: Partial<Pin>) => void
     deletePin: (id: string) => void
@@ -24,12 +26,14 @@ export const usePinpointStore = create<PinpointState>()(
             mode: 'past',
             pins: samplePins,
             selectedPin: null,
-            showAddModal: false,
+            isAdding: false,
+            lastClickedCoords: null,
 
-            setMode: (mode) => set({ mode, selectedPin: null }),
-            setSelectedPin: (pin) => set({ selectedPin: pin }),
-            setShowAddModal: (show) => set({ showAddModal: show }),
-            addPin: (pin) => set((s) => ({ pins: [...s.pins, pin] })),
+            setMode: (mode) => set({ mode, selectedPin: null, isAdding: false }),
+            setSelectedPin: (pin) => set({ selectedPin: pin, isAdding: false }),
+            setIsAdding: (adding) => set((s) => ({ isAdding: adding, selectedPin: adding ? null : s.selectedPin })),
+            setLastClickedCoords: (coords) => set({ lastClickedCoords: coords }),
+            addPin: (pin) => set((s) => ({ pins: [...s.pins, pin], isAdding: false })),
             updatePin: (id, updates) =>
                 set((s) => ({
                     pins: s.pins.map((p) => (p.id === id ? { ...p, ...updates } : p)),

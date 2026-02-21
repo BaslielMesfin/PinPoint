@@ -13,7 +13,7 @@ function getPinColor(pin: Pin) {
 export default function GlobeView() {
     const globeEl = useRef<any>(null)
     const containerRef = useRef<HTMLDivElement>(null)
-    const { mode, pins, setSelectedPin, selectedPin } = usePinpointStore()
+    const { mode, pins, setSelectedPin, selectedPin, isAdding, setLastClickedCoords, lastClickedCoords } = usePinpointStore()
     const selectedPinRef = useRef(selectedPin)   // always up-to-date in closures
 
     const [dimensions, setDimensions] = useState({
@@ -63,7 +63,7 @@ export default function GlobeView() {
         if (!globeEl.current) return
         const controls = globeEl.current.controls()
         if (controls) {
-            controls.autoRotate = !selectedPin
+            controls.autoRotate = !selectedPin && !isAdding
         }
 
         if (selectedPin) {
@@ -74,7 +74,7 @@ export default function GlobeView() {
                 altitude: 1.8
             }, 1000)
         }
-    }, [selectedPin])
+    }, [selectedPin, isAdding])
 
     const handlePinClick = useCallback(
         (point: object) => setSelectedPin(point as Pin),
@@ -126,7 +126,9 @@ export default function GlobeView() {
 
             container.addEventListener('mouseleave', () => {
                 const controls = globeEl.current?.controls()
-                if (controls && !selectedPinRef.current) controls.autoRotate = true
+                // Only resume if we aren't selecting a pin AND we aren't in adding mode
+                const { selectedPin: sel, isAdding: add } = usePinpointStore.getState()
+                if (controls && !sel && !add) controls.autoRotate = true
                 content.style.transform = 'translate(-50%, -100%) translateY(-10px) scale(1)'
                 content.style.boxShadow = `0 4px 12px ${color}33`
                 content.style.zIndex = '10'
@@ -171,8 +173,6 @@ export default function GlobeView() {
         [setSelectedPin]
     )
 
-    const ringsData = selectedPin ? [selectedPin] : []
-
     return (
         <div ref={containerRef} className="globe-container w-full h-full relative">
             {/* Pulse keyframe, injected once */}
@@ -204,15 +204,18 @@ export default function GlobeView() {
                 pointRadius={0.7}
                 pointsMerge={false}
                 onPointClick={handlePinClick}
+                onGlobeClick={({ lat, lng }) => {
+                    if (isAdding) setLastClickedCoords({ lat, lng })
+                }}
                 htmlElementsData={visiblePins}
                 htmlLat={(d) => (d as Pin).lat}
                 htmlLng={(d) => (d as Pin).lng}
                 htmlAltitude={0.04}
                 htmlElement={createPinElement}
-                ringsData={ringsData}
-                ringLat={(d) => (d as Pin).lat}
-                ringLng={(d) => (d as Pin).lng}
-                ringColor={() => (mode === 'past' ? '#f59e0bbb' : '#8b5cf6bb')}
+                ringsData={isAdding && lastClickedCoords ? [lastClickedCoords, ...(selectedPin ? [selectedPin] : [])] : (selectedPin ? [selectedPin] : [])}
+                ringLat={(d: any) => d.lat}
+                ringLng={(d: any) => d.lng}
+                ringColor={(d: any) => d === lastClickedCoords ? '#10b981' : (mode === 'past' ? '#f59e0bbb' : '#8b5cf6bb')}
                 ringMaxRadius={5}
                 ringPropagationSpeed={2.5}
                 ringRepeatPeriod={700}

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
-import { MapPin, Plus, Globe } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { MapPin, Plus } from 'lucide-react'
 import { usePinpointStore } from '../../store/usePinpointStore'
 import ModeToggle from '../ModeToggle/ModeToggle'
 
@@ -8,7 +9,7 @@ interface AppShellProps {
 }
 
 export default function AppShell({ children }: AppShellProps) {
-    const { mode, setShowAddModal } = usePinpointStore()
+    const { mode, setIsAdding } = usePinpointStore()
 
     const headerBg = mode === 'past'
         ? 'bg-white/90 border-amber-100'
@@ -19,16 +20,22 @@ export default function AppShell({ children }: AppShellProps) {
         : 'radial-gradient(at 0% 0%, #ede9fe 0%, transparent 50%), radial-gradient(at 100% 100%, #f5f3ff 0%, transparent 50%), #fafafa'
 
     return (
-        <div
-            className="flex flex-col h-screen w-screen transition-all duration-1000 overflow-hidden"
-            style={{ background: meshGradient }}
+        <motion.div
+            animate={{
+                background: meshGradient,
+            }}
+            transition={{
+                duration: 1.5,
+                ease: "easeInOut"
+            }}
+            className="flex flex-col h-screen w-screen overflow-hidden"
         >
             {/* ── Header ─────────────────────────────────────────────── */}
             <header className={`
-        relative z-50 flex items-center justify-between px-10 h-20
-        border-b border-white/20 backdrop-blur-md ${headerBg}
-        shadow-sm transition-all duration-500
-      `}>
+                relative z-50 flex items-center justify-between px-10 h-20
+                border-b border-white/20 backdrop-blur-md ${headerBg}
+                shadow-sm transition-all duration-500
+            `}>
                 {/* Logo */}
                 <div className="flex items-center gap-3">
                     <div
@@ -54,7 +61,7 @@ export default function AppShell({ children }: AppShellProps) {
                 {/* Right — Actions */}
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => setShowAddModal(true)}
+                        onClick={() => setIsAdding(true)}
                         className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95"
                         style={{
                             background: mode === 'past'
@@ -65,9 +72,6 @@ export default function AppShell({ children }: AppShellProps) {
                         <Plus size={16} />
                         Add Pin
                     </button>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 cursor-pointer hover:scale-105 transition-transform">
-                        <Globe size={14} />
-                    </div>
                 </div>
             </header>
 
@@ -75,6 +79,6 @@ export default function AppShell({ children }: AppShellProps) {
             <main className="flex-1 relative overflow-hidden">
                 {children}
             </main>
-        </div>
+        </motion.div>
     )
 }
