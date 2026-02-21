@@ -18,6 +18,7 @@ interface PinpointState {
     addPin: (pin: Pin) => void
     updatePin: (id: string, updates: Partial<Pin>) => void
     deletePin: (id: string) => void
+    completeTrip: (id: string) => void
 }
 
 export const usePinpointStore = create<PinpointState>()(
@@ -44,6 +45,21 @@ export const usePinpointStore = create<PinpointState>()(
                     pins: s.pins.filter((p) => p.id !== id),
                     selectedPin: s.selectedPin?.id === id ? null : s.selectedPin,
                 })),
+            completeTrip: (id) =>
+                set((s) => {
+                    const updatedPins = s.pins.map((p) =>
+                        p.id === id ? { ...p, mode: 'past' as const, visitedDate: p.tripEndDate || new Date().toISOString().split('T')[0] } : p
+                    )
+                    const updatedSelected = s.selectedPin?.id === id
+                        ? updatedPins.find(p => p.id === id) || null
+                        : s.selectedPin
+
+                    return {
+                        pins: updatedPins,
+                        mode: 'past',
+                        selectedPin: updatedSelected
+                    }
+                }),
         }),
         {
             name: 'pinpoint-storage',

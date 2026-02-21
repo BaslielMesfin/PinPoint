@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion'
-import { MapPin, Calendar, ArrowRight, Star, Globe, TrendingUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { usePinpointStore } from '../../store/usePinpointStore'
 
 export default function LocationSidebar() {
@@ -60,7 +59,6 @@ export default function LocationSidebar() {
                     <div className="flex flex-col">
                         <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">Total Places</span>
                         <div className="flex items-center gap-2">
-                            <Globe size={12} style={{ color: accentColor }} />
                             <span className="text-sm font-black text-gray-800">{totalDestinations}</span>
                         </div>
                     </div>
@@ -68,7 +66,6 @@ export default function LocationSidebar() {
                     <div className="flex flex-col">
                         <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">Countries</span>
                         <div className="flex items-center gap-2">
-                            <TrendingUp size={12} style={{ color: accentColor }} />
                             <span className="text-sm font-black text-gray-800">{uniqueCountries}</span>
                         </div>
                     </div>
@@ -79,8 +76,7 @@ export default function LocationSidebar() {
             <div className="flex-1 overflow-y-auto px-5 py-2 space-y-4 custom-scrollbar">
                 {filteredPins.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-40 text-gray-900/20 space-y-2">
-                        <MapPin size={24} opacity={0.3} />
-                        <p className="text-xs font-medium">No destinations found.</p>
+                        <p className="text-xs font-medium uppercase tracking-widest">No destinations found.</p>
                     </div>
                 ) : (
                     filteredPins.map((pin) => (
@@ -104,34 +100,29 @@ export default function LocationSidebar() {
                             }}
                         >
                             <div className="flex items-start justify-between">
-                                <div className="space-y-1.5">
+                                <div className="space-y-1">
                                     <h3 className="text-lg font-bold text-gray-900 leading-tight">
                                         {pin.city}
                                     </h3>
-                                    <p className="text-gray-900/50 text-[11px] font-medium flex items-center gap-1.5">
-                                        <MapPin size={10} style={{ color: accentColor }} />
+                                    <p className="text-gray-900/50 text-[11px] font-bold uppercase tracking-widest">
                                         {pin.country}
                                     </p>
                                 </div>
                                 {selectedPin?.id === pin.id && (
                                     <motion.div
                                         layoutId="active-indicator"
-                                        className="w-8 h-8 rounded-xl flex items-center justify-center text-white"
+                                        className="w-1.5 h-10 rounded-full"
                                         style={{ backgroundColor: accentColor }}
-                                    >
-                                        <Star size={14} fill="currentColor" />
-                                    </motion.div>
+                                    />
                                 )}
                             </div>
 
                             <div className="mt-4 flex items-center gap-4 text-[9px] text-gray-900/40 font-bold uppercase tracking-wider">
                                 <div className="flex items-center gap-1.5">
-                                    <Calendar size={10} />
                                     <span>{mode === 'past' ? pin.visitedDate : pin.tripStartDate}</span>
                                 </div>
                                 <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-gray-900">
                                     <span className="font-bold">Explore</span>
-                                    <ArrowRight size={10} />
                                 </div>
                             </div>
                         </motion.div>

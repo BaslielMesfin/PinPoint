@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, MapPin, Calendar, FileText, CheckSquare, Route, Trash2, Plus, X } from 'lucide-react'
 import { usePinpointStore } from '../../store/usePinpointStore'
 import { ChecklistItem } from '../../types'
 import { nanoid } from '../utils/nanoid'
@@ -41,47 +40,45 @@ export default function TripPlanner() {
     return (
         <div className="w-full h-full flex flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/95 backdrop-blur-3xl shadow-2xl">
             {/* Header */}
-            <div className="flex items-start justify-between p-6 pb-4">
+            <div className="flex items-start justify-between p-8 pb-4">
                 <div className="flex flex-col gap-1">
                     <button
                         onClick={() => setSelectedPin(null)}
-                        className="flex items-center gap-1 text-violet-500 hover:text-violet-600 transition-colors mb-2 -ml-1"
+                        className="text-[10px] font-bold uppercase tracking-widest text-violet-500 hover:text-violet-600 transition-colors mb-4"
                     >
-                        <ChevronLeft size={18} />
-                        <span className="text-xs font-bold uppercase tracking-wider">Back to adventures</span>
+                        ← Back to Adventures
                     </button>
                     <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                            <span className="text-[10px] uppercase tracking-widest text-violet-500 font-bold">Future Trip</span>
+                        <div className="flex items-center gap-2 mb-1.5">
+                            <div className="w-2 h-0.5 rounded-full bg-violet-500" />
+                            <span className="text-[10px] uppercase tracking-widest text-violet-500 font-black">Future Trip</span>
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 leading-tight">
+                        <h2 className="text-2xl font-bold text-gray-900 leading-tight">
                             {selectedPin.title || selectedPin.city}
                         </h2>
-                        <div className="flex items-center gap-1.5 mt-1 text-gray-400 text-xs font-medium">
-                            <MapPin size={10} />
-                            <span>{selectedPin.city}, {selectedPin.country}</span>
-                        </div>
+                        <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mt-1">
+                            {selectedPin.city}, {selectedPin.country}
+                        </p>
                     </div>
                 </div>
                 <button
                     onClick={() => { if (confirm('Cancel this plan?')) { deletePin(selectedPin.id); setSelectedPin(null) } }}
-                    className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center text-red-300 hover:text-red-500 transition-all"
+                    className="text-[10px] font-bold uppercase tracking-widest text-red-300 hover:text-red-500 transition-all mt-3"
                 >
-                    <Trash2 size={15} />
+                    Cancel
                 </button>
             </div>
 
             {/* Scrollable body */}
-            <div className="flex-1 overflow-y-auto px-6 space-y-6 pb-8 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto px-8 space-y-8 pb-12 custom-scrollbar">
 
                 {/* Dates */}
                 {(selectedPin.tripStartDate || selectedPin.tripEndDate) && (
-                    <div className="flex items-center gap-3 bg-violet-50/50 rounded-2xl p-4 border border-violet-100/50">
-                        <Calendar size={14} className="text-violet-400 shrink-0" />
-                        <div className="text-xs text-violet-700 font-bold tracking-tight">
+                    <div className="bg-violet-50/50 rounded-2xl p-5 border border-violet-100/50">
+                        <div className="text-[10px] text-violet-400 font-bold uppercase tracking-widest mb-1.5">Trip Schedule</div>
+                        <div className="text-sm text-violet-900 font-black tracking-tight">
                             {selectedPin.tripStartDate && new Date(selectedPin.tripStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                            {selectedPin.tripEndDate && ` → ${new Date(selectedPin.tripEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
+                            {selectedPin.tripEndDate && ` — ${new Date(selectedPin.tripEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}
                         </div>
                     </div>
                 )}
@@ -89,14 +86,14 @@ export default function TripPlanner() {
                 {/* Progress bar */}
                 {checklist.length > 0 && (
                     <div>
-                        <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2 pr-1">
-                            <span>Ready for takeoff?</span>
-                            <span>{doneCount}/{checklist.length}</span>
+                        <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-3 pr-1">
+                            <span>Readiness Checklist</span>
+                            <span>{doneCount}/{checklist.length} Complete</span>
                         </div>
-                        <div className="h-1.5 bg-violet-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-violet-100 rounded-full overflow-hidden">
                             <motion.div
                                 className="h-full rounded-full"
-                                style={{ background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)' }}
+                                style={{ background: '#8b5cf6' }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.5 }}
                             />
@@ -106,54 +103,51 @@ export default function TripPlanner() {
 
                 {/* Checklist */}
                 <div>
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                            <CheckSquare size={14} className="text-violet-400" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Preparation</span>
-                        </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Preparation Tasks</span>
                         <button
                             onClick={addCheckItem}
-                            className="flex items-center gap-1 text-[10px] bg-violet-100 text-violet-600 px-2 py-1 rounded-lg font-bold uppercase tracking-wider transition-colors hover:bg-violet-200"
+                            className="text-[10px] text-violet-600 font-black uppercase tracking-widest hover:text-violet-800"
                         >
-                            <Plus size={10} /> Add
+                            + Add Task
                         </button>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <AnimatePresence initial={false}>
                             {checklist.map((item) => (
                                 <motion.div
                                     key={item.id}
                                     layout
-                                    className="flex items-center gap-3 group"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex items-center gap-4 group"
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
                                 >
                                     <button
                                         onClick={() => toggleCheckItem(item.id)}
-                                        className={`w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 border-2 transition-all duration-200 ${item.done
+                                        className={`w-6 h-6 rounded-xl flex items-center justify-center flex-shrink-0 border-2 transition-all duration-200 ${item.done
                                             ? 'bg-violet-500 border-violet-500 shadow-sm'
                                             : 'border-violet-100 bg-white/50 hover:border-violet-300'
                                             }`}
                                     >
                                         {item.done && (
                                             <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                         )}
                                     </button>
                                     <input
-                                        className={`flex-1 text-sm bg-transparent border-none outline-none transition-all ${item.done ? 'line-through text-gray-300' : 'text-gray-700 font-medium'}`}
+                                        className={`flex-1 text-sm bg-transparent border-none outline-none transition-all ${item.done ? 'line-through text-gray-300' : 'text-gray-700 font-bold font-display'}`}
                                         value={item.text}
                                         onChange={(e) => updateCheckItem(item.id, e.target.value)}
-                                        placeholder="Add task..."
+                                        placeholder="Add mission..."
                                     />
                                     <button
                                         onClick={() => removeCheckItem(item.id)}
-                                        className="opacity-0 group-hover:opacity-100 text-red-200 hover:text-red-400 transition-all p-1"
+                                        className="opacity-0 group-hover:opacity-100 text-red-200 hover:text-red-400 transition-all p-1 text-[10px] font-black uppercase"
                                     >
-                                        <X size={13} />
+                                        Remove
                                     </button>
                                 </motion.div>
                             ))}
@@ -164,17 +158,16 @@ export default function TripPlanner() {
                 {/* Waypoints */}
                 {waypoints.length > 0 && (
                     <div>
-                        <div className="flex items-center gap-2 mb-3">
-                            <Route size={14} className="text-violet-400" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Route Plan</span>
+                        <div className="mb-4">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Planned Trajectory</span>
                         </div>
-                        <div className="space-y-2.5">
+                        <div className="space-y-3">
                             {waypoints.sort((a, b) => a.order - b.order).map((wp, idx) => (
-                                <div key={wp.id} className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-lg bg-violet-100/50 flex items-center justify-center text-violet-600 text-[10px] font-black flex-shrink-0 border border-violet-100">
-                                        {idx + 1}
+                                <div key={wp.id} className="flex items-center gap-4">
+                                    <div className="text-[10px] font-black text-violet-500 w-4">
+                                        {String(idx + 1).padStart(2, '0')}
                                     </div>
-                                    <span className="text-sm text-gray-700 font-medium">{wp.name}</span>
+                                    <span className="text-sm text-gray-700 font-bold font-display">{wp.name}</span>
                                 </div>
                             ))}
                         </div>
@@ -183,17 +176,29 @@ export default function TripPlanner() {
 
                 {/* Notes */}
                 <div>
-                    <div className="flex items-center gap-2 mb-3">
-                        <FileText size={14} className="text-violet-400" />
-                        <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Deep Dives</span>
+                    <div className="mb-4">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Tactical Notes</span>
                     </div>
                     <textarea
-                        className="w-full p-4 rounded-2xl text-sm text-gray-700 bg-violet-50/40 border border-violet-100/50 resize-none focus:outline-none focus:ring-2 focus:ring-violet-200/50 leading-relaxed font-medium"
+                        className="w-full p-5 rounded-3xl text-sm text-gray-700 bg-violet-50/40 border border-violet-100/50 resize-none focus:outline-none focus:ring-2 focus:ring-violet-200/50 leading-relaxed font-bold font-display"
                         rows={4}
                         value={selectedPin.tripNotes ?? ''}
                         placeholder="Itineraries, booking codes, curiosities..."
                         onChange={(e) => updatePin(selectedPin.id, { tripNotes: e.target.value })}
                     />
+                </div>
+
+                {/* Complete Adventure Action */}
+                <div className="pt-4">
+                    <button
+                        onClick={() => usePinpointStore.getState().completeTrip(selectedPin.id)}
+                        className="w-full py-4 bg-violet-600 text-white rounded-3xl font-black uppercase tracking-[0.2em] text-[11px] shadow-lg shadow-violet-500/20 hover:bg-violet-700 hover:scale-[0.98] transition-all"
+                    >
+                        Complete Adventure
+                    </button>
+                    <p className="text-center text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-4">
+                        Transform this plan into a permanent memory
+                    </p>
                 </div>
             </div>
 
