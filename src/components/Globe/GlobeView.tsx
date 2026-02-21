@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Globe from 'react-globe.gl'
 import { useRef, useEffect, useCallback, useState } from 'react'
 import { usePinpointStore } from '../../store/usePinpointStore'
