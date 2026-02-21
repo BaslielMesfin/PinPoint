@@ -11,6 +11,7 @@ function getPinColor(pin: Pin) {
 }
 
 export default function GlobeView() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const globeEl = useRef<any>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const { mode, pins, setSelectedPin, selectedPin, isAdding, setLastClickedCoords, lastClickedCoords } = usePinpointStore()
@@ -212,10 +213,10 @@ export default function GlobeView() {
                 htmlLng={(d) => (d as Pin).lng}
                 htmlAltitude={0.04}
                 htmlElement={createPinElement}
-                ringsData={isAdding && lastClickedCoords ? [lastClickedCoords, ...(selectedPin ? [selectedPin] : [])] : (selectedPin ? [selectedPin] : [])}
-                ringLat={(d: any) => d.lat}
-                ringLng={(d: any) => d.lng}
-                ringColor={(d: any) => d === lastClickedCoords ? '#10b981' : (mode === 'past' ? '#f59e0bbb' : '#8b5cf6bb')}
+                ringsData={usePinpointStore.getState().isAdding && lastClickedCoords ? [lastClickedCoords, ...(selectedPin ? [selectedPin] : [])] : (selectedPin ? [selectedPin] : [])}
+                ringLat={(d: object) => (d as { lat: number }).lat}
+                ringLng={(d: object) => (d as { lng: number }).lng}
+                ringColor={(d: object) => d === lastClickedCoords ? '#10b981' : (mode === 'past' ? '#f59e0bbb' : '#8b5cf6bb')}
                 ringMaxRadius={5}
                 ringPropagationSpeed={2.5}
                 ringRepeatPeriod={700}

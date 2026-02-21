@@ -104,7 +104,7 @@ export default function AddPinPanel() {
                                 onChange={(e) => setCity(e.target.value)}
                                 placeholder="e.g. Paris"
                                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 transition-all"
-                                style={{ '--tw-ring-color': `${accentColor}33` } as any}
+                                style={{ '--tw-ring-color': `${accentColor}33` } as React.CSSProperties}
                             />
                             {loading && (
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -122,7 +122,7 @@ export default function AddPinPanel() {
                             onChange={(e) => setCountry(e.target.value)}
                             placeholder="e.g. France"
                             className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 transition-all"
-                            style={{ '--tw-ring-color': `${accentColor}33` } as any}
+                            style={{ '--tw-ring-color': `${accentColor}33` } as React.CSSProperties}
                         />
                     </div>
                 </div>
@@ -139,7 +139,7 @@ export default function AddPinPanel() {
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl pl-12 pr-5 py-3 text-sm focus:outline-none focus:ring-2 transition-all appearance-none"
-                            style={{ '--tw-ring-color': `${accentColor}33` } as any}
+                            style={{ '--tw-ring-color': `${accentColor}33` } as React.CSSProperties}
                         />
                     </div>
                 </div>

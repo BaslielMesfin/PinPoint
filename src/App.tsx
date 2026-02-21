@@ -1,5 +1,5 @@
-import { Suspense, lazy, useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Suspense, lazy, useState, useEffect, useLayoutEffect, Component, ErrorInfo, ReactNode } from 'react'
+import { AnimatePresence, motion as m } from 'framer-motion'
 import AppShell from './components/Layout/AppShell'
 import { usePinpointStore } from './store/usePinpointStore'
 import MemoryPanel from './components/PastMode/MemoryPanel'
@@ -10,9 +10,9 @@ import AddPinPanel from './components/AddPin/AddPinPanel'
 // Lazy-load the heavy Globe component
 const GlobeView = lazy(() => import('./components/Globe/GlobeView'))
 
-function GlobeErrorBoundary({ children }: { children: React.ReactNode }) {
+function GlobeErrorBoundary({ children }: { children: ReactNode }) {
   const [hasError, setHasError] = useState(false)
-  const [error, setError] = useState<string>('')
+  const [errorMsg, setErrorMsg] = useState<string>('')
 
   if (hasError) {
     return (
@@ -21,10 +21,10 @@ function GlobeErrorBoundary({ children }: { children: React.ReactNode }) {
           <div className="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center text-red-500 text-2xl">!</div>
           <div className="space-y-1">
             <p className="font-display text-xl text-gray-900">Globe failed to rendezvous</p>
-            <p className="text-sm text-gray-500 leading-relaxed px-4">{error}</p>
+            <p className="text-sm text-gray-500 leading-relaxed px-4">{errorMsg}</p>
           </div>
           <button
-            onClick={() => { setHasError(false); setError(''); }}
+            onClick={() => { setHasError(false); setErrorMsg(''); }}
             className="px-6 py-2.5 rounded-full bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors"
           >
             Reconnect Satellite
@@ -35,15 +35,13 @@ function GlobeErrorBoundary({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ErrorBoundaryWrapper onError={(e) => { setHasError(true); setError(e); }}>
+    <ErrorBoundaryWrapper onError={(e) => { setHasError(true); setErrorMsg(e); }}>
       {children}
     </ErrorBoundaryWrapper>
   )
 }
 
 // Class-based error boundary wrapper
-import { Component, ErrorInfo, ReactNode } from 'react'
-
 interface EBProps {
   onError: (msg: string) => void
   children: ReactNode
@@ -70,7 +68,8 @@ function App() {
   const { mode, selectedPin, isAdding } = usePinpointStore()
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
+  // Use useLayoutEffect for hydration-friendly state setting
+  useLayoutEffect(() => {
     setMounted(true)
   }, [])
 
@@ -112,7 +111,7 @@ function App() {
         <div className="absolute top-6 right-6 bottom-6 w-[440px] z-30 pointer-events-auto">
           <AnimatePresence mode="wait">
             {isAdding ? (
-              <motion.div
+              <m.div
                 key="add-panel"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -121,9 +120,9 @@ function App() {
                 className="w-full h-full"
               >
                 <AddPinPanel />
-              </motion.div>
+              </m.div>
             ) : !selectedPin ? (
-              <motion.div
+              <m.div
                 key="sidebar-list"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -132,9 +131,9 @@ function App() {
                 className="w-full h-full"
               >
                 <LocationSidebar />
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div
+              <m.div
                 key={`detail-${selectedPin.id}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -143,7 +142,7 @@ function App() {
                 className="w-full h-full"
               >
                 {selectedPin.mode === 'past' ? <MemoryPanel /> : <TripPlanner />}
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
@@ -153,3 +152,4 @@ function App() {
 }
 
 export default App
+
