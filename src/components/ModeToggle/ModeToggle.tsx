@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { usePinpointStore } from '../../store/usePinpointStore'
-import { Clock, Sparkles } from 'lucide-react'
 
 export default function ModeToggle() {
     const { mode, setMode } = usePinpointStore()
@@ -10,7 +9,7 @@ export default function ModeToggle() {
             {/* Past */}
             <button
                 onClick={() => setMode('past')}
-                className="relative flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-300"
+                className="relative flex items-center px-6 py-1.5 rounded-full text-sm font-semibold transition-colors duration-300"
                 style={{ color: mode === 'past' ? '#ffffff' : '#78716c' }}
             >
                 {mode === 'past' && (
@@ -21,14 +20,13 @@ export default function ModeToggle() {
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                 )}
-                <Clock size={14} className="relative z-10" />
-                <span className="relative z-10">Past</span>
+                <span className="relative z-10 text-lg">Past</span>
             </button>
 
             {/* Future */}
             <button
                 onClick={() => setMode('future')}
-                className="relative flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-300"
+                className="relative flex items-center px-6 py-1.5 rounded-full text-sm font-semibold transition-colors duration-300"
                 style={{ color: mode === 'future' ? '#ffffff' : '#78716c' }}
             >
                 {mode === 'future' && (
@@ -39,8 +37,7 @@ export default function ModeToggle() {
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                 )}
-                <Sparkles size={14} className="relative z-10" />
-                <span className="relative z-10">Future</span>
+                <span className="relative z-10 text-lg">Future</span>
             </button>
         </div>
     )
