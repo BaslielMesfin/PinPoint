@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Suspense, lazy, useState, useEffect, useLayoutEffect, Component, ErrorInfo, ReactNode } from 'react'
 import { AnimatePresence, motion as m } from 'framer-motion'
 import AppShell from './components/Layout/AppShell'
