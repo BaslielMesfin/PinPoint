@@ -1,73 +1,77 @@
-# React + TypeScript + Vite
+# 🌍 PinPoint
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive 3D globe app for pinning travel memories and planning future adventures — built with React, TypeScript, and Three.js.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dual Mode System** — Switch between **Past** (golden memories) and **Future** (violet adventures)
+- **Interactive 3D Globe** — Click anywhere on the earth to drop a pin with auto reverse-geocoding
+- **Trip Lifecycle** — Plan a future trip → Complete it → It becomes a permanent memory
+- **Photo Memories** — Upload photos to past pins, displayed as a polaroid-style gallery
+- **Checklists & Route Planning** — Prepare for future trips with task lists and waypoints
+- **Persistent Data** — All pins, photos, and notes saved locally in the browser
+- **Glassmorphism UI** — Frosted glass HUD panels with crystal shimmer animations
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Technology | Purpose |
+|-----------|---------|
+| **React 19** + **TypeScript** | UI framework & type safety |
+| **Vite** | Build tool & dev server |
+| **Tailwind CSS** | Utility-first styling |
+| **react-globe.gl** + **Three.js** | 3D interactive globe |
+| **Framer Motion** | Smooth animations & transitions |
+| **Zustand** | Lightweight state management with persistence |
+| **Lucide React** | Icon library |
+| **Vercel** | Deployment platform |
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Clone the repo
+git clone https://github.com/BaslielMesfin/PinPoint.git
+cd PinPoint
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Install dependencies
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start dev server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📦 Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Create production build |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+
+## 📁 Project Structure
+
 ```
+src/
+├── components/
+│   ├── Globe/          # 3D interactive globe
+│   ├── Layout/         # Main app shell & HUD layout
+│   ├── ModeToggle/     # Past/Future mode switcher
+│   ├── Sidebar/        # Pin list sidebar
+│   ├── AddPin/         # New pin creation panel
+│   ├── PastMode/       # Memory panel & photo gallery
+│   └── FutureMode/     # Trip planner with checklists
+├── store/              # Zustand state management
+├── types/              # TypeScript interfaces
+├── data/               # Sample seed data
+└── assets/             # Custom fonts
+```
+
+## 🌐 Deployment
+
+Deployed on **Vercel** — auto-deploys on every push to `main`.
+
+## 📄 License
+
+MIT
